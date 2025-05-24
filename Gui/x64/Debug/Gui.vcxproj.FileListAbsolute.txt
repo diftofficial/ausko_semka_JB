@@ -1,0 +1,10 @@
+C:\Users\jergus\Documents\AUS-Mac1\x64\Debug\images\fail.png
+C:\Users\jergus\Documents\AUS-Mac1\x64\Debug\images\info.png
+C:\Users\jergus\Documents\AUS-Mac1\x64\Debug\images\pass.png
+C:\Users\jergus\Documents\AUS-Mac1\x64\Debug\images\warning.png
+C:\Users\jergus\Documents\AUS-Mac1\Gui\x64\Debug\Gui.vcxproj.AssemblyReference.cache
+C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\images\fail.png
+C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\images\info.png
+C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\images\pass.png
+C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\images\warning.png
+C:\Users\jergus\Documents\AUSKO-3Cast\Gui\x64\Debug\Gui.vcxproj.AssemblyReference.cache

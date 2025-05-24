@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\Gui.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\jergus\Documents\AUSKO-3Cast\Gui\images\fail.png</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\jergus\Documents\AUSKO-3Cast\Gui\images\info.png</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\jergus\Documents\AUSKO-3Cast\Gui\images\pass.png</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\jergus\Documents\AUSKO-3Cast\Gui\images\warning.png</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

@@ -1,0 +1,53 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly Gui, Version=0.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class gui.MainForm: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.Form
+    Void .ctor(std.vector<std::unique_ptr<ds::tests::Test\,std::default_delete<ds::tests::Test> >\,std::allocator<std::unique_ptr<ds::tests::Test\,std::default_delete<ds::tests::Test> > > >*, std.vector<std::unique_ptr<ds::utils::Analyzer\,std::default_delete<ds::utils::Analyzer> >\,std::allocator<std::unique_ptr<ds::utils::Analyzer\,std::default_delete<ds::utils::Analyzer> > > >*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    LogInfo(String): PrivateScope, Public, HideBySig
+    LogWarning(String): PrivateScope, Public, HideBySig
+    LogError(String): PrivateScope, Public, HideBySig
+Struct gui.MainForm+LogMessageType: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    LogMessageType Info = 0 : Public, Static, Literal, HasDefault
+    LogMessageType Warning = 1 : Public, Static, Literal, HasDefault
+    LogMessageType Error = 2 : Public, Static, Literal, HasDefault
+Struct gui.RawPointer<ds::tests::Test>: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+    Void .ctor(ds.tests.Test*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    ds.tests.Test* Get 'get ' : 
+  Methods:
+    get_Get(): PrivateScope, Public, HideBySig, SpecialName
+Struct gui.RawPointer<ds::utils::Analyzer>: AutoLayout, AnsiClass, Class, Public, SequentialLayout, Sealed, BeforeFieldInit
+  :System.ValueType
+    Void .ctor(ds.utils.Analyzer*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    ds.utils.Analyzer* Get 'get ' : 
+  Methods:
+    get_Get(): PrivateScope, Public, HideBySig, SpecialName
+Class gui.NoClickTree: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.TreeView
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class gui.LogInvoker: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(String): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(String, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
