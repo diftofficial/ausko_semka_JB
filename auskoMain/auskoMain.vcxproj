@@ -185,16 +185,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="algoritmus.cpp" />
+    <ClCompile Include="AlphabeticalComparator.cpp" />
     <ClCompile Include="auskoMain.cpp" />
     <ClCompile Include="Citac.cpp" />
     <ClCompile Include="hierarchia.cpp" />
+    <ClCompile Include="PopulationComparator.cpp" />
     <ClCompile Include="SimpleList.cpp" />
     <ClCompile Include="SimpleMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algoritmus.h" />
+    <ClInclude Include="AlphabeticalComparator.h" />
     <ClInclude Include="Citac.h" />
     <ClInclude Include="hierarchia.h" />
+    <ClInclude Include="PopulationComparator.h" />
     <ClInclude Include="SimpleList.h" />
     <ClInclude Include="SimpleMap.h" />
   </ItemGroup>

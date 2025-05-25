@@ -1,10 +1,2 @@
 ﻿  auskoMain.cpp
-  hierarchia.cpp
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(200,45): warning C4101: 'e': unreferenced local variable
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(204,41): warning C4101: 'e': unreferenced local variable
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(377,22): warning C4566: character represented by universal-character-name '\u013A' cannot be represented in the current code page (1252)
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(377,22): warning C4566: character represented by universal-character-name '\u0148' cannot be represented in the current code page (1252)
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(593,26): warning C4566: character represented by universal-character-name '\u013E' cannot be represented in the current code page (1252)
-C:\Users\jergus\Documents\AUSKO-3Cast\auskoMain\hierarchia.cpp(609,52): warning C4566: character represented by universal-character-name '\u010D' cannot be represented in the current code page (1252)
-  Generating Code...
   auskoMain.vcxproj -> C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\auskoMain.exe

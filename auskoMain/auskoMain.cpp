@@ -7,6 +7,13 @@
 #include <stdlib.h> 
 #include <crtdbg.h>
 
+#include "AlphabeticalComparator.h"
+#include "PopulationComparator.h"
+
+#include <libds/adt/sorts.h>            // QuickSort :contentReference[oaicite:0]{index=0}
+#include <libds/amt/implicit_sequence.h> // ImplicitSequence :contentReference[oaicite:1]{index=1}
+
+
 
 int main() {
     // zapni debug heap + dump pri ukončení
@@ -103,7 +110,44 @@ int main() {
     // Hlavné menu konzolovej aplikácie
     //std::cout << "Celkovo obyvatelov vo vsetkych obciach (2020–2024): " << celkovy << std::endl;
     int volba;
+    // Funkcia na výpis uzla
+    auto vypisUzol = [](const ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node) {
+        std::cout << "Uzol: " << node->data_.name << ", Kod: " << node->data_.kod
+            << ", Typ: " << static_cast<int>(node->data_.uzemnaJednotka);
+        if (node->data_.uzemnaJednotka != TypUzemnejJednotky::Obec) {
+            std::cout << ", 2020: " << (node->data_.akumulativnavalue1muzi + node->data_.akumulativnavalue2zeny)
+                << " (muži: " << node->data_.akumulativnavalue1muzi << ", ženy: " << node->data_.akumulativnavalue2zeny << ")"
+                << ", 2021: " << (node->data_.akumulativnavalue3muzi + node->data_.akumulativnavalue4zeny)
+                << " (muži: " << node->data_.akumulativnavalue3muzi << ", ženy: " << node->data_.akumulativnavalue4zeny << ")"
+                << ", 2022: " << (node->data_.akumulativnavalue5muzi + node->data_.akumulativnavalue6zeny)
+                << " (muži: " << node->data_.akumulativnavalue5muzi << ", ženy: " << node->data_.akumulativnavalue6zeny << ")"
+                << ", 2023: " << (node->data_.akumulativnavalue7muzi + node->data_.akumulativnavalue8zeny)
+                << " (muži: " << node->data_.akumulativnavalue7muzi << ", ženy: " << node->data_.akumulativnavalue8zeny << ")"
+                << ", 2024: " << (node->data_.akumulativnavalue9muzi + node->data_.akumulativnavalue10zeny)
+                << " (muži: " << node->data_.akumulativnavalue9muzi << ", ženy: " << node->data_.akumulativnavalue10zeny << ")"
+                << "\n"
+                << "\n";
+        }
+        else {
+            std::cout
+                << ", 2020: " << (node->data_.value1muzi + node->data_.value2zeny)
+                << " (muži: " << node->data_.value1muzi << ", ženy: " << node->data_.value2zeny << ")"
+                << ", 2021: " << (node->data_.value3muzi + node->data_.value4zeny)
+                << " (muži: " << node->data_.value3muzi << ", ženy: " << node->data_.value4zeny << ")"
+                << ", 2022: " << (node->data_.value5muzi + node->data_.value6zeny)
+                << " (muži: " << node->data_.value5muzi << ", ženy: " << node->data_.value6zeny << ")"
+                << ", 2023: " << (node->data_.value7muzi + node->data_.value8zeny)
+                << " (muži: " << node->data_.value7muzi << ", ženy: " << node->data_.value8zeny << ")"
+                << ", 2024: " << (node->data_.value9muzi + node->data_.value10zeny)
+                << " (muži: " << node->data_.value9muzi << ", ženy: " << node->data_.value10zeny << ")"
+                << "\n"
+                << "\n";
+        }
+        };
     do {
+        hierarchia::NodeList myList;
+        myList.clear();
+
         std::cout << "\n=== Hlavne menu ===\n";
         std::cout << "Aktualny uzol: " << currentNode->data_.name << " (kod: " << currentNode->data_.kod << ", typ: " << static_cast<int>(currentNode->data_.uzemnaJednotka) << ")\n";
         std::cout << "1. Ist hore hierarchiou\n";
@@ -166,55 +210,33 @@ int main() {
             std::cout << "Vyber predikat: ";
             std::cin >> predikat;
 
-            // Funkcia na výpis uzla
-            auto vypisUzol = [](const ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node) {
-                std::cout << "Uzol: " << node->data_.name << ", Kod: " << node->data_.kod
-                    << ", Typ: " << static_cast<int>(node->data_.uzemnaJednotka);
-                if (node->data_.uzemnaJednotka != TypUzemnejJednotky::Obec) {
-                    std::cout << ", 2020: " << (node->data_.akumulativnavalue1muzi + node->data_.akumulativnavalue2zeny)
-                        << " (muži: " << node->data_.akumulativnavalue1muzi << ", ženy: " << node->data_.akumulativnavalue2zeny << ")"
-                        << ", 2021: " << (node->data_.akumulativnavalue3muzi + node->data_.akumulativnavalue4zeny)
-                        << " (muži: " << node->data_.akumulativnavalue3muzi << ", ženy: " << node->data_.akumulativnavalue4zeny << ")"
-                        << ", 2022: " << (node->data_.akumulativnavalue5muzi + node->data_.akumulativnavalue6zeny)
-                        << " (muži: " << node->data_.akumulativnavalue5muzi << ", ženy: " << node->data_.akumulativnavalue6zeny << ")"
-                        << ", 2023: " << (node->data_.akumulativnavalue7muzi + node->data_.akumulativnavalue8zeny)
-                        << " (muži: " << node->data_.akumulativnavalue7muzi << ", ženy: " << node->data_.akumulativnavalue8zeny << ")"
-                        << ", 2024: " << (node->data_.akumulativnavalue9muzi + node->data_.akumulativnavalue10zeny)
-                        << " (muži: " << node->data_.akumulativnavalue9muzi << ", ženy: " << node->data_.akumulativnavalue10zeny << ")"
-                        << "\n";
-                }
-                else {
-                    std::cout
-                        << ", 2020: " << (node->data_.value1muzi + node->data_.value2zeny)
-                        << " (muži: " << node->data_.value1muzi << ", ženy: " << node->data_.value2zeny << ")"
-                        << ", 2021: " << (node->data_.value3muzi + node->data_.value4zeny)
-                        << " (muži: " << node->data_.value3muzi << ", ženy: " << node->data_.value4zeny << ")"
-                        << ", 2022: " << (node->data_.value5muzi + node->data_.value6zeny)
-                        << " (muži: " << node->data_.value5muzi << ", ženy: " << node->data_.value6zeny << ")"
-                        << ", 2023: " << (node->data_.value7muzi + node->data_.value8zeny)
-                        << " (muži: " << node->data_.value7muzi << ", ženy: " << node->data_.value8zeny << ")"
-                        << ", 2024: " << (node->data_.value9muzi + node->data_.value10zeny)
-                        << " (muži: " << node->data_.value9muzi << ", ženy: " << node->data_.value10zeny << ")"
-                        << "\n";
-                }
-                };
+            
 
             // Funkcia na rekurzívne prechádzanie podstromu a aplikáciu predikátu
-            std::function<void(ds::amt::MultiWayExplicitHierarchyBlock<Obec>*, std::function<bool(const ds::amt::MultiWayExplicitHierarchyBlock<Obec>*)>)> aplikujPredikatNaPodstrom;
-            aplikujPredikatNaPodstrom = [&aplikujPredikatNaPodstrom, &vypisUzol](ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node, std::function<bool(const ds::amt::MultiWayExplicitHierarchyBlock<Obec>*)> predikat) {
-                if (!node) return;
+            std::function<
+                void(ds::amt::MultiWayExplicitHierarchyBlock<Obec>*,
+                    std::function<bool(const ds::amt::MultiWayExplicitHierarchyBlock<Obec>*)>)
+            > aplikujPredikatNaPodstrom;
 
-                // Aplikujeme predikát na aktuálny uzol
-                if (predikat(node)) {
-                    vypisUzol(node);
-                }
+            aplikujPredikatNaPodstrom =
+                [&aplikujPredikatNaPodstrom, &vypisUzol, &myList]
+                (ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node,
+                    const std::function<bool(const ds::amt::MultiWayExplicitHierarchyBlock<Obec>*)>& predikat)
+                {
+                    if (!node) return;
 
-                // Rekurzívne prejdeme synov
-                if (node->sons_ && !node->sons_->isEmpty()) {
-                    for (auto it = node->sons_->begin(); it != node->sons_->end(); ++it) {
-                        aplikujPredikatNaPodstrom(*it, predikat);
+                    if (predikat(node)) {
+                        // 3a) vypíšeme uzol
+                        vypisUzol(node);
+                        // 3b) a zároveň ho ukladáme
+                        myList.push_back(node);
                     }
-                }
+
+                    if (node->sons_ && !node->sons_->isEmpty()) {
+                        for (auto it = node->sons_->begin(); it != node->sons_->end(); ++it) {
+                            aplikujPredikatNaPodstrom(*it, predikat);
+                        }
+                    }
                 };
 
             // Definícia predikátu
@@ -344,15 +366,230 @@ int main() {
                         << "  (kod=" << node->data_.kod << ")\n";
                 }
             }
+            continue;
 
             
         }
         else if (volba == 5) {
             std::cout << "Koniec programu.\n";
+            break;
         }
         else {
             std::cout << "Neplatna volba, skus znova.\n";
         }
+
+        // alias for readability
+        using NodePtr = ds::amt::MultiWayExplicitHierarchyBlock<Obec>*;
+
+        // 1) Build the ImplicitSequence
+        ds::amt::ImplicitSequence<NodePtr> seq;
+        if (myList.size() > 0) {
+            seq.reserveCapacity(myList.size());
+        }
+        // reserve exact capacity
+
+        
+        // no reserveCapacity()
+
+       
+        
+
+        int rozhodnutieKomparator;
+
+        while (true) {
+            std::cout << "aky chces pouzit komparator:\n"
+                << " 0 = ziadny\n"
+                << " 1 = abecedne\n"
+                << " 2 = populacie\n"
+                << "Zadaj cislo [0–2]: ";
+            std::cin >> rozhodnutieKomparator;
+
+            // if user typed something that's not an int, clear and retry
+            if (!std::cin) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                continue;
+            }
+
+            if (rozhodnutieKomparator < 0 || rozhodnutieKomparator > 2) {
+                std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                continue;   // jump back and re-prompt
+            }
+
+            // valid input 0–2, break out of the loop
+            break;
+        }
+
+        // here rozhodnutieKomparator is guaranteed 0,1 or 2
+        if (rozhodnutieKomparator == 0) {
+            continue;
+        }
+        else if (rozhodnutieKomparator == 1) {
+            for (auto it = myList.begin(); it != myList.end(); ++it) {
+                auto& blk = seq.insertLast();
+                blk.data_ = *it;
+            }
+
+            // 2) Sort it with QuickSort + your CompareNodeByName
+            ds::adt::QuickSort<NodePtr> sorter;              // QuickSort<T> :contentReference[oaicite:1]{index=1}
+            CompareNodeByName cmp;
+            sorter.sort(seq,
+                [&](NodePtr a, NodePtr b) {
+                    return cmp(a, b) < 0;   // –1 means a < b
+                }
+            );
+
+            // 3) Write the newly‐sorted pointers back into your SimpleList
+            myList.clear();
+            for (size_t i = 0; i < seq.size(); ++i) {
+                myList.push_back(seq.access(i)->data_);
+            }
+
+            // 4) Print them in alphabetical order
+            std::cout << "\n";
+            std::cout << "Zoradené uzly abecedne:\n";
+            std::cout << "\n";
+            for (auto ptr = myList.begin(); ptr != myList.end(); ++ptr) {
+                vypisUzol(*ptr);
+            }
+        }
+        else { // ==2
+
+            int rozhodnutieKtoryRok;
+
+            while (true) {
+                
+                std::cout << "pre aky rok:\n"
+                    << " 0 = 2020\n"
+                    << " 1 = 2021\n"
+                    << " 2 = 2022\n"
+                    << " 3 = 2023\n"
+                    << " 4 = 2024\n"
+                    << "Zadaj cislo [0–4]: ";
+                std::cin >> rozhodnutieKtoryRok;
+
+                // if user typed something that's not an int, clear and retry
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                    continue;
+                }
+
+                if (rozhodnutieKtoryRok < 0 || rozhodnutieKtoryRok > 4) {
+                    std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                    continue;   // jump back and re-prompt
+                }
+
+                // valid input 0–4, break out of the loop
+                break;
+            }
+            int selectedYear = 2020;
+            if (rozhodnutieKtoryRok==0)
+            {
+                selectedYear = 2020;
+            }else if(rozhodnutieKtoryRok == 1) {
+                selectedYear = 2021;
+            }
+            else if (rozhodnutieKtoryRok == 2) {
+                selectedYear = 2022;
+            }
+            else if (rozhodnutieKtoryRok == 3) {
+                selectedYear = 2023;
+            }
+            else if (rozhodnutieKtoryRok == 4) {
+                selectedYear = 2024;
+            }
+
+
+
+            int rozhodnutieKriteria;
+
+            while (true) {
+
+                std::cout << "podla akeho kriteria:\n"
+                    << " 0 = SPOLU\n"
+                    << " 1 = muzi\n"
+                    << " 2 = zeny\n"
+                    << "Zadaj cislo [0–2]: ";
+                std::cin >> rozhodnutieKriteria;
+
+                // if user typed something that's not an int, clear and retry
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                    continue;
+                }
+
+                if (rozhodnutieKtoryRok < 0 || rozhodnutieKtoryRok > 2) {
+                    std::cout << "Zle zadane cislo. Skus znovu.\n\n";
+                    continue;   // jump back and re-prompt
+                }
+
+                // valid input 0–4, break out of the loop
+                break;
+            }
+
+            // Build sequence
+            ds::amt::ImplicitSequence<NodePtr> seqPopulation;
+            for (auto it = myList.begin(); it != myList.end(); ++it) {
+                auto& blk = seqPopulation.insertLast();
+                blk.data_ = *it;
+            }
+            ds::adt::QuickSort<NodePtr> sorterPopulation;
+            
+            if (rozhodnutieKriteria == 0)
+            {
+                // Sort by population
+                
+                CompareByPopulation popCmp(selectedYear, CompareByPopulation::Gender::SPOLU);
+                sorterPopulation.sort(seqPopulation,
+                    [&](NodePtr a, NodePtr b) {
+                        return popCmp(a, b) < 0;  // –1 means a<b
+                    }
+                );
+            }
+            else if (rozhodnutieKriteria == 1) {
+                // Sort by population
+                
+                CompareByPopulation popCmp(selectedYear, CompareByPopulation::Gender::MUZI);
+                sorterPopulation.sort(seqPopulation,
+                    [&](NodePtr a, NodePtr b) {
+                        return popCmp(a, b) < 0;  // –1 means a<b
+                    }
+                );
+            }
+            else if (rozhodnutieKriteria == 2) {
+                // Sort by population
+                
+                CompareByPopulation popCmp(selectedYear, CompareByPopulation::Gender::ZENY);
+                sorterPopulation.sort(seqPopulation,
+                    [&](NodePtr a, NodePtr b) {
+                        return popCmp(a, b) < 0;  // –1 means a<b
+                    }
+                );
+
+            }
+            
+
+            
+
+            // Write back & print
+            myList.clear();
+            for (size_t i = 0; i < seqPopulation.size(); ++i)
+                myList.push_back(seqPopulation.access(i)->data_);
+
+            std::cout << "\n";
+            std::cout << "Zoradené uzly podla populacie za rok" << selectedYear << ":\n";
+            std::cout << "\n";
+            for (auto p : myList)
+                vypisUzol(p);
+        }
+        
+       
+       
     } while (volba != 5);
     //hierarchia.clearHierarchy();
     

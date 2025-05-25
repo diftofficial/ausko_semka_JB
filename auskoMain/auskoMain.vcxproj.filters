@@ -33,6 +33,12 @@
     <ClCompile Include="SimpleMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlphabeticalComparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PopulationComparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Citac.h">
@@ -48,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SimpleMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphabeticalComparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PopulationComparator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
