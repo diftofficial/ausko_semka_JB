@@ -93,8 +93,8 @@ int main() {
         return 1;
     }
     //3 uroven tabulka
-    hierarchia.indexAllNodes();
-    hierarchia.printTables();
+     hierarchia.indexAllNodes();
+   // hierarchia.printTables();
     
     
     
@@ -375,7 +375,7 @@ int main() {
         std::cout << "Hodnota 9muzi: " << obec.value9muzi << std::endl;
         std::cout << "Hodnota 10zeny: " << obec.value10zeny << std::endl;
         std::cout << std::endl;
-    }**/
+    }
     //3 CAST semestralky----------------------------------------------------
     
     // namiesto jednej find() teraz voláme findAll()
@@ -395,9 +395,8 @@ int main() {
                 << " • " << node->data_.name
                 << " (kod=" << node->data_.kod << ")\n";
         }
-    }
-
-    } //ukoncivaci 
+    }**/
+    } 
     _CrtDumpMemoryLeaks();
     return 0;
     

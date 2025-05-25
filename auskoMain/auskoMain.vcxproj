@@ -188,11 +188,15 @@
     <ClCompile Include="auskoMain.cpp" />
     <ClCompile Include="Citac.cpp" />
     <ClCompile Include="hierarchia.cpp" />
+    <ClCompile Include="SimpleList.cpp" />
+    <ClCompile Include="SimpleMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algoritmus.h" />
     <ClInclude Include="Citac.h" />
     <ClInclude Include="hierarchia.h" />
+    <ClInclude Include="SimpleList.h" />
+    <ClInclude Include="SimpleMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

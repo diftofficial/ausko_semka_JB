@@ -181,7 +181,7 @@ namespace ds::adt {
         using PrimaryRegionIterator = typename amt::IS<SynonymTable*>::IteratorType;
 
     private:
-        static const size_t CAPACITY = 100;
+        static const size_t CAPACITY = 10000;
 
     private:
         amt::IS<SynonymTable*>* primaryRegion_;

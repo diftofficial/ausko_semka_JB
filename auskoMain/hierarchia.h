@@ -2,11 +2,11 @@
 
 #include <libds/amt/explicit_hierarchy.h>
 #include "Citac.h"
-
 #include <memory>
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include "SimpleList.h"
+#include "SimpleMap.h"
 #include <libds/adt/table.h>
 
 class hierarchia {
@@ -35,19 +35,11 @@ public:
     void indexAllNodes();
 
     using NodePtr = ds::amt::MultiWayExplicitHierarchyBlock<Obec>*;
-    using NodeList = std::list<NodePtr>;
-    
+    using NodeList = SimpleList<NodePtr>;
 
-    /// Vráti *všetky* uzly so zadaným menom a typom
-    std::list<NodePtr> findAll(const std::string& name,
-        TypUzemnejJednotky type) const;
-    
+    NodeList findAll(const std::string& name, TypUzemnejJednotky type) const;
+    NodePtr find(const std::string& name, TypUzemnejJednotky type) const;
 
-    /// Vráti prvý nájdený uzol alebo nullptr
-    NodePtr find(const std::string& name,
-        TypUzemnejJednotky type) const;
-
-    /// Debug: vypíše celý obsah tabuliek
     void printTables() const;
 
     // utility
@@ -56,16 +48,9 @@ public:
 
 private:
     std::vector<Obec> zozbierajUzlyPodstromu(ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node, TypUzemnejJednotky typ);
-    /// Pomocná metóda, ktorá zoberie za parameter ukazovateľ na blok a
-    /// vráti vektor všetkých Obec v pod­stro­me.
-    std::vector<Obec>
-        collectObceVPodstrome(ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node);
+    std::vector<Obec> collectObceVPodstrome(ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node);
     ds::amt::MultiWayExplicitHierarchy<Obec>* strom = nullptr;
 
-    // jediná mapa: typ územnej jednotky → hash-tabuľka kľúč→zoznam uzlov
-    std::unordered_map<TypUzemnejJednotky,
-        std::unique_ptr< ds::adt::Table<std::string, NodeList> >
-    > byType;
-
-
+    // Vlastná mapa: typ územnej jednotky → tabuľka názov→NodeList
+    SimpleMap<TypUzemnejJednotky, ds::adt::Table<std::string, NodeList>*> byType;
 };

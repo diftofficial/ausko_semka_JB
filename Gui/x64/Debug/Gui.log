@@ -1,6 +1,4 @@
 ﻿  main_form.cpp
-  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
-  Generating Code...
   main_form.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
 DataStructures.lib(test.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
   Gui.vcxproj -> C:\Users\jergus\Documents\AUSKO-3Cast\x64\Debug\Gui.exe

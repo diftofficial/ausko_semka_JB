@@ -156,6 +156,7 @@
     <ClCompile Include="tests\_details\test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="complexities\complexity.h" />
     <ClInclude Include="libds\adt\abstract_data_type.h" />
     <ClInclude Include="libds\adt\array.h" />
     <ClInclude Include="libds\adt\list.h" />

@@ -47,15 +47,21 @@ hierarchia::~hierarchia()
     //delete strom;
     //strom = nullptr;
     **/
-
+    // Vymaž všetky tabuľky v byType
+    for (auto it = byType.begin(); it != byType.end(); ++it) {
+        if (it->value != nullptr) {
+            delete it->value; // vymaže tabuľku a jej obsah (ak table to podporuje)
+            it->value = nullptr;
+        }
+    }
     byType.clear();
 
     if (strom) {
-        // Let the library clean up all nodes correctly
         strom->clear();
         delete strom;
         strom = nullptr;
     }
+
 }
 
 void hierarchia::naplnenieHierarchie()
@@ -472,69 +478,82 @@ void hierarchia::aktualizujKumulativneUdaje() {
         });
 }
 //3 uroven
-void hierarchia::indexAllNodes() {
-    using Block = ds::amt::MultiWayExplicitHierarchyBlock<Obec>;
-    using NodePtr = Block*;
-
-    if (!strom || !strom->accessRoot()) return;
-
-    strom->processPreOrder(
-        strom->accessRoot(),
-        [this](const Block* node) {
-            // z mapy vyberieme unique_ptr na Table<string,NodeList>
-            auto& uptr = byType[node->data_.uzemnaJednotka];
-            auto* tbl = static_cast<
-                ds::adt::HashTable<std::string, NodeList>*
-            >(uptr.get());
-
-            NodeList* slot = nullptr;
-            if (!tbl->tryFind(node->data_.name, slot)) {
-                // prvé vloženie: vytvoríme list s jedným prvkom
-                tbl->insert(node->data_.name,
-                    NodeList{ const_cast<NodePtr>(node) });
-            }
-            else {
-                // duplikát: pripojeme ďalší uzol do listu
-                slot->push_back(const_cast<NodePtr>(node));
-            }
-        }
-    );
-}
-
-
 void hierarchia::initTables() {
     using HT = ds::adt::HashTable<std::string, NodeList>;
-    byType[TypUzemnejJednotky::Obec] = std::make_unique<HT>();
-    byType[TypUzemnejJednotky::Region] = std::make_unique<HT>();
-    byType[TypUzemnejJednotky::Republika] = std::make_unique<HT>();
-    byType[TypUzemnejJednotky::GeografickaPoloha] = std::make_unique<HT>();
-    byType[TypUzemnejJednotky::Rakusko] = std::make_unique<HT>();
+    byType.insert(TypUzemnejJednotky::Obec, new HT());
+    byType.insert(TypUzemnejJednotky::Region, new HT());
+    byType.insert(TypUzemnejJednotky::Republika, new HT());
+    byType.insert(TypUzemnejJednotky::GeografickaPoloha, new HT());
+    byType.insert(TypUzemnejJednotky::Rakusko, new HT());
+}
+
+void hierarchia::indexAllNodes() {
+    using Block = ds::amt::MultiWayExplicitHierarchyBlock<Obec>;
+    if (!strom || !strom->accessRoot()) return;
+
+    // Najskôr vyčistíme všetky tabuľky
+    for (auto it = byType.begin(); it != byType.end(); ++it) {
+        it->value->clear();
+    }
+
+    strom->processPreOrder(strom->accessRoot(), [this](const Block* node) {
+        // Zisti tabuľku podľa typu uzla
+        ds::adt::Table<std::string, NodeList>* tbl = nullptr;
+        for (auto it = byType.begin(); it != byType.end(); ++it) {
+            if (it->key == node->data_.uzemnaJednotka) {
+                tbl = it->value;
+                break;
+            }
+        }
+        if (!tbl) return;
+
+        // Pokús sa nájsť existujúci zoznam pre daný názov
+        NodeList* slot = nullptr;
+        if (!tbl->tryFind(node->data_.name, slot)) {
+            // Ak neexistuje, vytvor nový zoznam s týmto uzlom a vlož
+            NodeList tmp;
+            tmp.push_back(const_cast<Block*>(node));
+            tbl->insert(node->data_.name, tmp);
+        }
+        else {
+            // Ak existuje, pridaj tento uzol do zoznamu
+            slot->push_back(const_cast<Block*>(node));
+        }
+        });
 }
 
 
-hierarchia::NodeList
-hierarchia::findAll(const std::string& name,
-    TypUzemnejJednotky type) const
+
+
+
+
+
+
+
+
+
+
+
+
+
+hierarchia::NodeList hierarchia::findAll(const std::string& name, TypUzemnejJednotky type) const
 {
     NodeList out;
-    auto it = byType.find(type);
-    if (it == byType.end()) return out;
+    const ds::adt::Table<std::string, NodeList>* tbl = nullptr;
+    // Ručne iteruj cez byType (const verzia)
+    for (const auto* it = byType.begin(); it != byType.end(); ++it) {
+        if (it->key == type) {
+            tbl = it->value;
+            break;
+        }
+    }
+    if (!tbl) return out;
 
-    // získame HashTable<string,NodeList>*
-    auto* tbl = static_cast<
-        ds::adt::HashTable<std::string, NodeList>*
-    >(it->second.get());
-
-    // prejdeme všetky položky tabuľky
-    for (auto iter = tbl->begin(); iter != tbl->end(); ++iter) {
-        auto const& item = *iter;  // TableItem<string,NodeList>&
-        if (item.key_ == name) {
-            // pripojeme celý list z tabuľky do výsledkov
-            out.insert(
-                out.end(),
-                item.data_.begin(),
-                item.data_.end()
-            );
+    NodeList* slot = nullptr;
+    if (tbl->tryFind(name, slot)) {
+        // skopíruj všetko zo slotu do out
+        for (size_t i = 0; i < slot->size(); ++i) {
+            out.push_back((*slot)[i]);
         }
     }
     return out;
@@ -543,33 +562,77 @@ hierarchia::findAll(const std::string& name,
 
 
 
-void hierarchia::printTables() const {
-    using HT = ds::adt::HashTable<std::string, NodeList>;
+void hierarchia::printTables() const
+{
+    std::cout << "===== VYPIS OBSAHU TABULIEK (byType) =====" << std::endl;
 
-    for (auto const& [type, tblPtr] : byType) {
-        std::cout << "=== Table for type "
-            << static_cast<int>(type)
-            << " ===\n";
-        auto* tbl = static_cast<HT*>(tblPtr.get());
+    // Helper function to convert TypUzemnejJednotky to string for readable output
+    auto typToString = [](TypUzemnejJednotky typ) -> std::string {
+        switch (typ) {
+        case TypUzemnejJednotky::Rakusko: return "Rakusko";
+        case TypUzemnejJednotky::GeografickaPoloha: return "GeografickaPoloha";
+        case TypUzemnejJednotky::Republika: return "Republika";
+        case TypUzemnejJednotky::Region: return "Region";
+        case TypUzemnejJednotky::Obec: return "Obec";
+        default: return "Neznamy";
+        }
+        };
 
-        if (tbl->isEmpty()) {
-            std::cout << "  (empty)\n\n";
+    // Iterate over the byType hash table
+    for (auto it = byType.begin(); it != byType.end(); ++it) {
+        const auto& typ = it->key;
+        const ds::adt::Table<std::string, NodeList>* tabulka = it->value;
+
+        // Print header for the current type
+        std::cout << "\nTyp uzemnej jednotky: " << typToString(typ)
+            << " (" << static_cast<int>(typ) << ")" << std::endl;
+        std::cout << "---------------------------------------" << std::endl;
+
+        // Check if table is empty or null
+        if (!tabulka || tabulka->isEmpty()) {
+            std::cout << "  Tabuľka je prázdna alebo neexistuje." << std::endl;
             continue;
         }
 
-        for (auto it = tbl->begin(); it != tbl->end(); ++it) {
-            auto const& item = *it;  // TableItem<string,NodeList>&
-            std::cout << "  key=\"" << item.key_ << "\" → [ ";
-            bool first = true;
-            for (auto node : item.data_) {
-                if (!first) std::cout << ", ";
-                std::cout << node->data_.name
-                    << "(kod=" << node->data_.kod << ")";
-                first = false;
+        // Collect all names for this type by traversing the hierarchy
+        std::vector<std::string> names;
+        strom->processPreOrder(strom->accessRoot(), [&names, typ](const ds::amt::MultiWayExplicitHierarchyBlock<Obec>* node) {
+            if (node->data_.uzemnaJednotka == typ) {
+                names.push_back(node->data_.name);
             }
-            std::cout << " ]\n";
+            });
+
+        // Use tryFind to access each entry
+        for (const auto& meno : names) {
+            NodeList* zoznam = nullptr;
+            if (tabulka->tryFind(meno, zoznam)) {
+                std::cout << "  Meno: " << meno << " (Počet uzlov: " << zoznam->size() << ")" << std::endl;
+                for (size_t i = 0; i < zoznam->size(); ++i) {
+                    const auto* uzol = (*zoznam)[i];
+                    if (uzol) {
+                        std::cout << "    -> Uzel: " << uzol->data_.name
+                            << ", Kód: " << uzol->data_.kod
+                            << ", Typ: " << typToString(uzol->data_.uzemnaJednotka)
+                            << std::endl;
+                    }
+                    else {
+                        std::cout << "    -> Neplatný uzol (nullptr)" << std::endl;
+                    }
+                }
+            }
         }
-        std::cout << "\n";
     }
+
+    std::cout << "===== KONIEC VÝPISU TABULIEK =====" << std::endl;
 }
+
+
+
+
+
+
+
+
+
+
 
